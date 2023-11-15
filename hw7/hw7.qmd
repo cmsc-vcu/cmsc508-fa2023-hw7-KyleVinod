@@ -1,6 +1,6 @@
 ---
 title: Homework 7 - Creating a resume database
-author: (your name goes here!)
+author: Kyle Vinod
 date: last-modified
 format:
     html:
@@ -10,11 +10,11 @@ format:
         code-copy: true
 ---
 
-(include a brief description of what is in this document)
+This document contains diagrams and tables to explain the database a company is using. It contains a Crows-foot diagram
+explaining how the database works, and what is connected to what. It will later display the peoples, roles, and skills
+tables, and display different lists detailing them within the list titles. 
 
-(Please clean up any comments that I included.  This is a scaffold document.)
-
-GITHUB URL:  <your URL goes here!>
+GITHUB URL:  https://github.com/cmsc-vcu/cmsc508-fa2023-hw7-KyleVinod/tree/main
 
 ```{python}
 #| eval: true
@@ -34,10 +34,10 @@ from IPython.display import display, Markdown
 
 # modify config_map to reflect credentials needed by this program
 config_map = {
-    'user':'CMSC508_USER',
-    'password':'CMSC508_PASSWORD',
-    'host':'CMSC508_HOST',
-    'database':'HW7_DB_NAME'
+    'user': 'CMSC508_USER',
+    'password': 'CMSC508_PASSWORD',
+    'host': 'CMSC508_HOST',
+    'database': 'HW7_DB_NAME'
 }
 # load and store credentials
 load_dotenv()
@@ -92,24 +92,58 @@ except Exception as e:
 
 ## Overview and description
 
-(briefly describe the project and the database)
+THe project creates a database that will contain a company skills of employees and their roles.
+The database will help with determining the skills of different employees and if their roles should
+belong to them or not. The database will help determine any skills and roles of employees in the company, and
+if the sensei wants a certain employees with differents roles and different skills.
 
 ## Crows-foot diagram
 
-(add a description of the diagram and what the reader is seeing.)
+The diagram below shows the different tables within the database, and how they are
+connected to each other. The peoples table is connected to each other table, and 
+the peoples table determines connecting any of the other tables with each other.
 
 ```{mermaid}
-%%| echo: false
 erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
-    CUSTOMER{
-        int id
-        string first_name
-        string last_name
+    skills }o--}o people : acquired
+    peopleskills }o--}o people : type
+    roles }|--}| people : tasks
+    people_roles }|--}| people : type
+    skills {
+        int ID
+        String name
+        String description
+        String tag
+        String URL
+        String time_commitment
     }
-    DELIVERY-ADDRESS {
-        int id
+    people {
+        int ID
+        String first_name
+        String last_name
+        String email
+        String linkedin_url
+        String headshot_url
+        String discord_handle
+        String brief_bio
+        String date_joined
+    }
+    peopleskills {
+        int ID
+        int skills_ID
+        int people_ID
+        String date_acquired
+    }
+    roles {
+        int ID
+        String name
+        int sort_priority
+    }
+    people_roles {
+        int ID
+        int people_ID
+        int role_ID
+        String date_role_acquired
     }
 ```
 
@@ -149,8 +183,18 @@ Below is a list of data in the *skills* table.
 ```{python}
 #| echo: false
 #| eval: true
-
+sql = f"""
+select * from skills;
+"""
 ## Add code to list roles table here
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 ### Roles table
@@ -162,8 +206,18 @@ Below is a list of data in the *roles* table.
 ```{python}
 #| echo: false
 #| eval: true
-
+sql = f"""
+select * from roles;
+"""
 ## Add code to list roles table here
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 
@@ -201,29 +255,186 @@ df
 
 ### List people names and email addresses ordered by last_name
 
+```{python}
+#| echo: false
+#| eval: true
+sql = f"""
+select first_name,email
+from people
+order by
+    last_name
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+
+```
 
 ### List skill names of Person 1
 
+```{python}
+#| echo: false
+#| eval: true
+sql = f"""
+select names
+from skills left join peopleskills
+on skills.id = peopleskills.skills_ID
+where people_ID = 1
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+
+```
 
 ### List people names with Skill 6
 
+```{python}
+#| echo: false
+#| eval: true
+sql = f"""
+select first_name
+from people left join peopleskills
+on people.id = peopleskills.people_ID
+where peopleskills.skills_ID = 6
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+
+```
 
 ### List people with a DEVELOPER role
 
+```{python}
+#| echo: false
+#| eval: true
+sql = f"""
+select first_name
+from people left join peopleroles
+on people.id = peopleroles.people_ID
+where peopleroles.role_ID = 20
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+
+```
 
 ### List names and email addresses of people without skills
 
+```{python}
+#| echo: false
+#| eval: true
+sql = f"""
+select first_name, email
+from people left join peopleskills
+on people.id = peopleskills.people_ID
+where peopleskills.skills_ID = 0
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+
+```
 
 ### List names and tags of unused skills
 
+```{python}
+#| echo: false
+#| eval: true
+sql = f"""
+select names,tag
+from skills
+where id in (7,8)
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+
+```
 
 ### List people names and skill names with the BOSS role
 
+```{python}
+#| echo: false
+#| eval: true
+sql = f"""
+select people.first_name, skills.names as skills
+from people
+inner join skills
+on people.id = skills.id
+left join peopleroles
+on people.id = peopleroles.people_ID
+where peopleroles.role_ID = 50
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+
+```
 
 ### List ids and names of unused roles
 
+```{python}
+#| echo: false
+#| eval: true
+sql = f"""
+select roles.id, roles.names
+from roles left join peopleroles
+on peopleroles.role_ID = roles.id
+where peopleroles.role_ID = 0
+"""
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+
+```
 
 ## Reflection
 
-(Write a paragraph expressing your thoughts, feelings, and insights about your experience with this assignment.  Pause and breath before writing - I'm trying to encourage critical thinking and self-awareness while allowing you to explore the connections between theory and practice. And yes, delete this paragraph.)
-
+THis project gave me a greater understanding for how databases work. I never realized
+how difficult it can be to get different parts of the database to interact with each other.
+I believe if I practice more with creating databases, I will have a perfect understanding with how
+they work, how I want them to work for me, and how I want it set up. I will say the coding for the 
+sql file was hard to not get any errors in it.
