@@ -77,7 +77,7 @@ CREATE TABLE people (
 );
 
 # Section 5
-# Populate people with six people.
+# Populate people with ten people.
 # Their last names must exactly be “Person 1”, “Person 2”, etc.
 # Other fields are for you to assign.
 
@@ -86,7 +86,11 @@ insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,disc
 insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (3,'Paul','Person 3','feet@vcu.edu',NULL,NULL,NULL,NULL,'2003-11-13');
 insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (4,'Tanvir','Person 4','love@vcu.edu',NULL,NULL,NULL,NULL,'2005-05-30');
 insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (5,'Tommy','Person 5','fight@vcu.edu',NULL,NULL,NULL,NULL,'2006-09-10');
-insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (6,'Janet','Person 6',NULL,NULL,NULL,NULL,NULL,'2006-12-17');
+insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (6,'Janet','Person 6','mang@vcu.edu',NULL,NULL,NULL,NULL,'2006-12-17');
+insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (7,'Emma','Person 7','lax@vcu.edu',NULL,NULL,NULL,NULL,'2007-01-17');
+insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (8,'Gavin','Person 8','frat@vcu.edu',NULL,NULL,NULL,NULL,'2007-01-28');
+insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (9,'Rachel','Person 9','cs@vcu.edu',NULL,NULL,NULL,NULL,'2007-02-01');
+insert into people (id,first_name,last_name,email,linkedin_url,headshot_url,discord_handle,brief_bio,date_joined) values (10,'Ethan','Person 10','death@vcu.edu',NULL,NULL,NULL,NULL,'2007-2-09');
 
 
 
@@ -143,7 +147,6 @@ insert into peopleskills (id,skills_id,people_id,date_acquired) values (23,(5),9
 insert into peopleskills (id,skills_id,people_id,date_acquired) values (24,(6),9,'2013-12-21');
 insert into peopleskills (id,skills_id,people_id,date_acquired) values (25,(1),10,'2014-04-19');
 insert into peopleskills (id,skills_id,people_id,date_acquired) values (26,(4),10,'2014-04-19');
-insert into peopleskills (id,skills_id,people_id,date_acquired) values (27,(5),10,'2014-04-19');
 
 
 # Section 8
